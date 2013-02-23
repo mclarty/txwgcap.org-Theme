@@ -76,7 +76,7 @@ function txwgcap_make_unit_row( $unit, $header = NULL ) {
 		echo '<td style="text-align: center; width: ' . $table_args['Charter'] . ';">' . $charter . '</td>';
 		echo '<td style="width: ' . $table_args['Unit Name'] . ';">';
 		if ( $unit->URL ) echo '<a href="' . $unit->URL . '" target="_blank">';
-		echo strtoupper( $unit->Name );
+		echo strtoupper( preg_replace( '/ SQ/', NULL, preg_replace( '/ (SQDN|SQUADRON)/', NULL, $unit->Name ) ) );
 		if ( $unit->URL ) echo '</a>';
 		echo '</td>';
 		if ( is_user_logged_in() ) {
