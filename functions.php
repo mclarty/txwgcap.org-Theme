@@ -149,6 +149,18 @@ genesis_register_sidebar( array(
 	'description'	=>	__( 'This is the call to action banner.', 'education' ),
 ) );
 
+/** Add Login/Logout menu item **/
+add_filter( 'wp_nav_menu_items', 'login_logout_menu_item', 10, 2 );
+
+function login_logout_menu_item( $items, $args ) {
+	if ( is_user_logged_in() ) {
+		$items .= '<li><a href="' . wp_logout_url() . '">Logout</a></li>';
+	} else {
+		$items .= '<li><a href="' . wp_login_url( get_permalink() ) . '">Login</a></li>';
+	}
+
+	return $items;
+}
 
 /** Texas Wing Widgets **/
 
