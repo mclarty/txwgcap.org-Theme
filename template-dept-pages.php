@@ -35,11 +35,19 @@ function department_sidebar() {
 	global $post, $wpdb;
 	
 	$qry = "SELECT wp_officers.*, (SELECT Rank FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Rank, ";
+	$qry.= "(SELECT CONCAT(NameFirst, ' ', NameLast) FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Name, ";
 	$qry.= "(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND CAPID = wp_officers.positionCAPID) AS Email ";
 	$qry.= "FROM wp_officers WHERE positionShortname = '{$post->post_name}'";
 
 	$officersSelection = $wpdb->get_results( $qry );
-	$officersSelection[0]->positionOfficer = $officersSelection[0]->positionOfficer ? $officersSelection[0]->positionOfficer : 'Vacant'; 
+
+	if ( $officersSelection[0]->positionCAPID || $officersSelection[0]->positionOfficer ) {
+		$officersSelection[0]->positionOfficer = $officersSelection[0]->positionOfficer ? $officersSelection[0]->positionOfficer : 
+			$officersSelection[0]->Name;
+	} else {
+		$officersSelection[0]->positionOfficer = 'Vacant';
+	}
+
 	$officersSelection[0]->positionEmail = $officersSelection[0]->positionEmail ? $officersSelection[0]->positionEmail : $officersSelection[0]->Email;
 
 ?>
@@ -70,10 +78,12 @@ function department_sidebar() {
 
 		if ( !in_array( $officersSelection[0]->positionType, array( 1, 22, 23 ) ) && !in_array( $post->post_name, $excludeOPR ) ) {
 			$qry = "SELECT wp_officers.*, (SELECT Rank FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Rank, ";
+			$qry.= "(SELECT CONCAT(NameFirst, ' ', NameLast) FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Name, ";
 			$qry.= "(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND CAPID = wp_officers.positionCAPID) ";
 			$qry.= "AS Email FROM wp_officers WHERE positionType = {$officersSelection[0]->positionType} AND positionOrder > 1 ";
 		} else {
 			$qry = "SELECT wp_officers.*, (SELECT Rank FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Rank, ";
+			$qry.= "(SELECT CONCAT(NameFirst, ' ', NameLast) FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Name, ";
 			$qry.= "(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND CAPID = wp_officers.positionCAPID) ";
 			$qry.= "AS Email FROM wp_officers WHERE positionShortname LIKE '{$officersSelection[0]->positionShortname}-%' AND positionOrder > 1 ";
 		}
@@ -91,8 +101,15 @@ function department_sidebar() {
 			echo '<div id="dept_staff">';
 
 			foreach( $officersSelection as $officer ) {
+				if ( $officer->positionCAPID || $officer->positionOfficer ) {
+					$officer->positionOfficer = $officer->positionOfficer ? $officer->positionOfficer : 
+						$officer->Name;
+				} else {
+					$officer->positionOfficer = 'Vacant';
+				}
+
 				$officer->positionEmail = $officer->positionEmail ? $officer->positionEmail : $officer->Email;
-				$officer->positionOfficer = $officer->positionOfficer ? $officer->positionOfficer : 'Vacant';
+
 				echo '<p>';
 				echo "<h2>{$officer->positionName}</h2>";
 				echo "<h3>{$officer->Rank} " . stripslashes( $officer->positionOfficer ) . "</h3>";
