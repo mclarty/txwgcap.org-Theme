@@ -95,6 +95,8 @@ function txwgcap_make_unit_row( $unit, $header = NULL ) {
 function txwgcap_units_list() {
 	global $wpdb;
 
+	$excludedUnits = get_option( 'capwatch_exclude_orgs_unitlist' );
+
 	echo '<table class="unit_list_table unit_list_table_header">';
 	txwgcap_make_unit_row( NULL, TRUE );
 	echo '</table>';
@@ -113,7 +115,10 @@ function txwgcap_units_list() {
 		echo '<br /><h4>Group ' . convertToRoman( substr( $unit->Unit, 1, 1 ) ) . '</h4>';
 		echo '<table class="unit_list_table">';
 		txwgcap_make_unit_row( $unit );
-		$squadrons = txwgcap_get_unit_data( "NextLevel=" . $unit->ORGID . " ORDER BY Unit" );
+		$query = "NextLevel=" . $unit->ORGID;
+		$query .= $excludedUnits ? " AND ORGID NOT IN (" . $excludedUnits . ")" : NULL;
+		$query .= " ORDER BY Unit";
+		$squadrons = txwgcap_get_unit_data( $query );
 		foreach( $squadrons as $squadron ) {
 			txwgcap_make_unit_row( $squadron );
 		}
