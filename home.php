@@ -94,6 +94,38 @@ function txwgcap_home_sidebar_helper() {
 		
 }
 
+function txwgcap_genesis_do_loop() {
+	$cat = genesis_get_option( 'blog_cat' );
+	$num_entries = genesis_get_option( 'blog_cat_num' );
+
+	$args = array(
+		'post_type'			=> 'post',
+		'post_status'		=> 'publish',
+		'posts_per_page'	=> $num_entries,
+		'cat'				=> $cat,
+		);
+
+	global $wp_query;
+
+	$wp_query = new WP_Query( $args );
+
+	if ( have_posts() ) {
+		echo '<div class="updates_widget"><h2>Recent News</h2>';
+
+		while ( have_posts() ) : the_post();
+
+			echo '<div class="post type-post status-publish format-standard entry homepage">';
+			echo get_the_post_thumbnail( NULL, NULL, array( 'class' => 'alignleft' ) );
+			echo '<h2><a href="' . get_permalink() . '">' . get_the_title() . '</a></h2>';
+			echo '<p>' . get_the_excerpt() . '</p>';
+			echo '</div>';
+
+		endwhile;
+
+		echo '</div>';
+	}
+}
+
 if ( is_home() ) {
 	add_filter( 'genesis_pre_get_option_site_layout', 'txwgcap_home_layout' );
 	add_action( 'genesis_before_loop', 'txwgcap_home_loop_helper' );
