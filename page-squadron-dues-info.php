@@ -45,7 +45,14 @@ function squadron_dues_info() {
 	</tr>
 	<?php
 
-	$lead_qry = $wpdb->get_results( "SELECT * FROM wp_rg_lead WHERE form_id = 4" );
+	$unitListing = $wpdb->get_results( "	SELECT CONCAT( Region, '-', Wing, '-', Unit, ' ', Name ) AS UnitName 
+											FROM wp_capwatch_org 
+											WHERE Wing = 'TX' 
+											AND Unit NOT IN ( '000', '999' ) 
+											AND Scope = 'UNIT' 
+											ORDER BY UnitName" );
+
+	$lead_qry = $wpdb->get_results( "SELECT * FROM wp_rg_lead WHERE form_id = 4 ORDER BY id" );
 	foreach( $lead_qry as $row ) {
 		$qry = $wpdb->get_results( sprintf( "SELECT * FROM wp_rg_lead_detail WHERE lead_id = %d", $row->id ) );
 		foreach( $qry as $subrow ) {
@@ -60,26 +67,26 @@ function squadron_dues_info() {
 		$units[$unit->UnitName] = $unit;
 	}
 
-	if ( $units ) {
-		sort( $units );
-		foreach ( $units as $unit ) {
-			echo "<tr style='text-align: center;'>";
-			echo "<td>{$unit->UnitName}</td>";
-			echo "<td>{$unit->Dues}</td>";
-			echo "<td>{$unit->SubmittedBy}</td>";
-			echo "<td>{$unit->date_created}</td>";
-			if ( !$unit->ApprovedDate && in_array( $user->user_login, $approvers ) ) {
+	foreach( $unitListing as $row ) {
+		echo "<tr style='text-align: center;'>";
+		echo "<td>{$row->UnitName}</td>";
+		if ( $unitData = $units[$row->UnitName] ) {
+			echo "<td>{$unitData->Dues}</td>";
+			echo "<td>{$unitData->SubmittedBy}</td>";
+			echo "<td>{$unitData->date_created}</td>";
+			if ( !$unitData->ApprovedDate && in_array( $user->user_login, $approvers ) ) {
 				echo "	<td colspan='2'>
-							<input type='button' 
-							value='Approve' 
-							onclick=\"window.location.href='" . $_SERVER['REQUEST_URI'] . "?approve={$unit->id}'\" />
+							<input type='button' value='Approve' 
+							onclick=\"window.location.href='" . $_SERVER['REQUEST_URI'] . "?approve={$unitData->id}'\" />
 						</td>";
 			} else {
-				echo "<td>{$unit->ApprovedBy}</td>";
-				echo "<td>{$unit->ApprovedDate}</td>";
+				echo "<td>{$unitData->ApprovedBy}</td>";
+				echo "<td>{$unitData->ApprovedDate}</td>";
 			}
-			echo "</tr>";
+		} else {
+			echo "<td colspan='5'>No Data Submitted</td>";
 		}
+		echo "</tr>";
 	}
 	
 	?>
