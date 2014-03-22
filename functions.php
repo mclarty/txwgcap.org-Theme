@@ -115,8 +115,13 @@ genesis_register_sidebar( array(
 ) );
 genesis_register_sidebar( array(
 	'id'			=> 	'home_left',
-	'name'			=>	__( 'Home Left', 'education' ),
-	'description'	=>	__( 'This is the home left section displayed below the slider.', 'education' ),
+	'name'			=>	__( 'Home Left Top', 'education' ),
+	'description'	=>	__( 'This is the home left section displayed above the loop.', 'education' ),
+) );
+genesis_register_sidebar( array(
+	'id'			=> 	'home_left_bottom',
+	'name'			=>	__( 'Home Left Bottom', 'education' ),
+	'description'	=>	__( 'This is the home left section displayed below the loop.', 'education' ),
 ) );
 genesis_register_sidebar( array(
 	'id'			=> 	'home_right',
