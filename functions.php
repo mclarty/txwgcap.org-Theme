@@ -584,6 +584,35 @@ function txwg_docs_list() {
 }
 
 
+/** Documents admin console **/
+
+function add_document_number_column( $defaults ) {
+
+	//get checkbox, title, and workflow state
+	$output = array_slice( $defaults, 0, 3 );
+
+	//splice in workflow state
+	$output['document_number'] = 'Document Number';
+
+	//get the rest of the columns
+	$output = array_merge( $output, array_slice( $defaults, 2 ) );
+
+	//return
+	return $output;
+}
+
+function document_number_column_cb( $column_name, $post_id ) {
+
+	//verify column
+	if ( 'document_number' == $column_name ) {
+		echo get_post_meta( $post_id, 'document_number', TRUE );
+	}
+}
+
+add_filter( 'manage_edit-document_columns', 'add_document_number_column', 25 );
+add_action( 'manage_document_posts_custom_column', 'document_number_column_cb', 10, 2 );
+
+
 /** Convert numbers to roman numerals for the group listings **/
 
 function convertToRoman( $int ) {
