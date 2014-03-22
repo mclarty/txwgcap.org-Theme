@@ -752,3 +752,114 @@ add_action( 'admin_menu', 'register_txwgcap_menu' );
 function register_txwgcap_menu() {
 	add_menu_page( 'Texas Wing Options Dashboard', 'TXWG Options', 'manage_options', 'txwgcap', 'show_txwgcap_menu', '/wp-content/themes/txwgcap/images/favicon.ico', 51 );
 }
+
+
+/** Related Items Widget **/
+
+function department_related_items() {
+	global $post, $wpdb;
+
+	// Related Pages
+
+	$args = array(
+		'sort_column' => 'post_title',
+		'depth' => 1,
+		'child_of' => $post->ID,
+		'title_li' => NULL,
+		'echo' => 0,
+		);
+
+	if ( is_user_logged_in() ) {
+		$args['post_status'] = 'publish,private';
+	}
+
+	$relatedPages = wp_list_pages( $args );
+
+	// Related Links
+
+	$cat = get_term_by( 'slug', $post->post_name . '-links', 'link_category' );
+
+	if ( $cat ) {
+		$args = array(
+			'category' => $cat->term_id,
+			'categorize' => 0,
+			'title_li' => NULL,
+			'echo' => 0,
+			);
+
+		if ( is_user_logged_in() ) {
+			$args['hide_invisible'] = 0;
+		}
+
+		$relatedLinks = wp_list_bookmarks( $args );
+	}
+
+	// Related Forms/Pubs
+
+	$cat = get_term_by( 'slug', $post->post_name . '-formspubs', 'link_category' );
+
+	if ( $cat ) {
+		$args = array(
+			'category' => $cat->term_id,
+			'categorize' => 0,
+			'title_li' => NULL,
+			'echo' => 0,
+			);
+
+		if ( is_user_logged_in() ) {
+			$args['hide_invisible'] = 0;
+		}
+
+		$relatedFormsPubs = wp_list_bookmarks( $args );
+	}
+
+	// Render the related box
+
+	?>
+
+	<?php if ( $relatedPages || $relatedLinks || $relatedFormsPubs ) { ?>
+
+		<div id="related_items">
+
+		<?php if ( $relatedPages ) { ?>
+
+			<div id="related_pages">
+				<h2>Related Pages</h2>
+				<ul class="childpages">
+					<?php echo $relatedPages; ?>
+				</ul>
+			</div>
+
+		<?php } ?>
+
+		<?php if ( $relatedLinks ) { ?>
+
+			<div id="related_links">
+				<h2>Related Links</h2>
+				<ul class="childpages">
+					<?php echo $relatedLinks; ?>
+				</ul>
+			</div>
+
+		<?php } ?>
+
+		<?php if ( $relatedFormsPubs ) { ?>
+
+			<div id="related_formspubs">
+				<h2>Related Forms &amp; Pubs</h2>
+				<ul class="childpages">
+					<?php echo $relatedFormsPubs; ?>
+				</ul>
+			</div>
+
+		<?php } ?>
+
+			<div class="clear"></div>
+
+		</div>
+
+	<?php 
+
+	}
+
+}
