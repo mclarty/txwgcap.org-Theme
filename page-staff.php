@@ -45,6 +45,7 @@ function staff_listing() {
 
 		$qry  = "SELECT wp_officers.*, 
 				(SELECT Rank FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Rank, 
+				(SELECT CONCAT(NameFirst, ' ', NameLast) FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Name, 
 				(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'CELL PHONE' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID) AS CellPhone, 
 				(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'HOME PHONE' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID) AS HomePhone, 
 				(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID) AS Email 
@@ -57,6 +58,13 @@ function staff_listing() {
 		$officersSelection = $wpdb->get_results( $qry );
 
 		foreach ( $officersSelection as $officer ) {
+			if ( $officer->positionCAPID || $officer->positionOfficer ) {
+				$officer->positionOfficer = $officer->positionOfficer ? $officer->positionOfficer : 
+					$officer->Name;
+			} else {
+				$officer->positionOfficer = 'Vacant';
+			}
+
 			$officer->Email = $officer->positionEmail ? strtolower( $officer->positionEmail ) : strtolower( $officer->Email );
 			$officer->Phone = $officer->CellPhone ? $officer->CellPhone : $officer->HomePhone;
 			$officer->Phone = $officer->positionPhone ? $officer->positionPhone : $officer->Phone;
@@ -66,11 +74,7 @@ function staff_listing() {
 					echo "<td class='{$col}''>";
 					switch ( $col ) {
 						case 'positionOfficer':
-							if ( $officer->$col ) {
-								echo stripslashes( "{$officer->Rank} {$officer->positionOfficer}" );
-							} else {
-								echo "Vacant";
-							}
+							echo stripslashes( $officer->Rank . ' ' . $officer->positionOfficer );
 							break;
 						case 'Phone':
 							if ( $officer->$col ) {
