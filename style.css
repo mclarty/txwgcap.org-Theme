@@ -3137,5 +3137,9 @@ li a[href$='https://plus.google.com/101965883926133529611'] {
 }
 
 .dues-list tr:nth-child(even) {
+	background-color: #ddd;
+}
+
+.dues-list tr:nth-child(odd) {
 	background-color: #eee;
 }
