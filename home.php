@@ -69,6 +69,15 @@ function txwgcap_home_loop_helper() {
 		
 }
 
+function txwgcap_home_left_bottom_helper() {
+	
+		genesis_widget_area( 'home_left_bottom', array(
+			'before'	=> '<div class="updates_widget">',
+			'after'		=> '</div>'
+		) );
+		
+}
+
 function txwgcap_home_sidebar_helper() {
 
 	if ( is_user_logged_in() ) {
