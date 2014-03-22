@@ -863,3 +863,113 @@ function department_related_items() {
 	}
 
 }
+/** Gravity Forms Hacks **/
+
+add_filter( 'gform_pre_render_3', 'populate_wing_staff_report_date_dropdown' );
+add_filter( 'gform_admin_pre_render_3', 'populate_wing_staff_report_date_dropdown' );
+add_filter( 'gform_pre_render_3', 'populate_wing_staff_report_functional_areas_dropdown' );
+add_filter( 'gform_admin_pre_render_3', 'populate_admin_wing_staff_report_functional_areas_dropdown' );
+
+function populate_wing_staff_report_date_dropdown( $form ) {
+	global $wpdb;
+
+	foreach( $form['fields'] as &$field ) {
+		if ( strpos( $field['cssClass'], 'reporting-month' ) === false ) {
+			continue;
+		}
+
+		$months[] = array( 'text' => '-- Select One --', 'value' => NULL );
+		$months[] = array( 'text' => date( 'F Y' ), 'value' => date( 'F Y' ) );
+
+		$field['choices'] = $months;
+	}
+
+	foreach( $form['fields'] as &$field ) {
+		if ( strpos( $field['cssClass'], 'functional-area' ) === false ) {
+			continue;
+		}
+
+		$functional_areas[] = array( 'text' => '-- Select One --', 'value' => NULL );
+
+		$current_user = wp_get_current_user();
+
+		$qry = $wpdb->get_results( sprintf( "	SELECT positionTypeName 
+												FROM wp_officers_types 
+												WHERE positionTypeID IN (
+													SELECT DISTINCT positionType 
+													FROM wp_officers 
+													WHERE positionCAPID = %d ) 
+												ORDER BY positionTypeName",
+										mysql_real_escape_string( $current_user->user_login ) ) );
+
+		foreach( $qry as $row ) {
+			$display = $row->positionTypeName;
+			$display = stripslashes( $display );
+			$functional_areas[] = array( 'text' => $display, 'value' => $display );
+		}
+
+		$field['choices'] = $functional_areas;
+	}
+
+	return $form;
+}
+
+function populate_wing_staff_report_functional_areas_dropdown( $form ) {
+	global $wpdb;
+
+	foreach( $form['fields'] as &$field ) {
+		if ( strpos( $field['cssClass'], 'functional-area' ) === false ) {
+			continue;
+		}
+
+		$functional_areas[] = array( 'text' => '-- Select One --', 'value' => NULL );
+
+		$current_user = wp_get_current_user();
+
+		$qry = $wpdb->get_results( sprintf( "	SELECT positionTypeName 
+												FROM wp_officers_types 
+												WHERE positionTypeID IN (
+													SELECT DISTINCT positionType 
+													FROM wp_officers 
+													WHERE positionCAPID = %d ) 
+												ORDER BY positionTypeName",
+										mysql_real_escape_string( $current_user->user_login ) ) );
+
+		foreach( $qry as $row ) {
+			$display = $row->positionTypeName;
+			$display = stripslashes( $display );
+			$functional_areas[] = array( 'text' => $display, 'value' => $display );
+		}
+
+		$field['choices'] = $functional_areas;
+	}
+
+	return $form;
+}
+
+function populate_admin_wing_staff_report_functional_areas_dropdown( $form ) {
+	global $wpdb;
+
+	foreach( $form['fields'] as &$field ) {
+		if ( strpos( $field['cssClass'], 'functional-area' ) === false ) {
+			continue;
+		}
+
+		$functional_areas[] = array( 'text' => '-- Select One --', 'value' => NULL );
+
+		$qry = $wpdb->get_results( sprintf( "	SELECT positionTypeName 
+												FROM wp_officers_types 
+												ORDER BY positionTypeName",
+										mysql_real_escape_string( $user->user_login ) ) );
+
+		foreach( $qry as $row ) {
+			$display = $row->positionTypeName;
+			$display = stripslashes( $display );
+			$functional_areas[] = array( 'text' => $display, 'value' => $display );
+		}
+
+		$field['choices'] = $functional_areas;
+	}
+
+	return $form;
+}
