@@ -130,6 +130,7 @@ if ( is_home() ) {
 	add_filter( 'genesis_pre_get_option_site_layout', 'txwgcap_home_layout' );
 	add_action( 'genesis_before_loop', 'txwgcap_home_loop_helper' );
 	add_action( 'genesis_after_content', 'txwgcap_home_sidebar_helper' );
+	add_action( 'genesis_loop', 'txwgcap_genesis_do_loop' );
 	remove_action( 'genesis_loop', 'genesis_do_loop' );
 	remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
 }
