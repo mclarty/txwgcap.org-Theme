@@ -13,7 +13,13 @@ function txwgcap_admin_init() {
 	wp_enqueue_style( 'txwgcap-admin-css' );
 }
 
+function txwgcap_init() {
+	wp_register_script( 'gplusone', 'https://apis.google.com/js/plusone.js', NULL, NULL, TRUE );
+	wp_enqueue_script( 'gplusone' );
+}
+
 add_action( 'admin_init', 'txwgcap_admin_init' );
+add_action( 'init', 'txwgcap_init' );
 
 
 /** Create additional color style options */
