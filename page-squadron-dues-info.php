@@ -37,7 +37,8 @@ function squadron_dues_info() {
 <table class="dues-list">
 	<tr>
 		<th>Unit Name</th>
-		<th>Dues Amount</th>
+		<th>Senior Dues</th>
+		<th>Cadet Dues</th>
 		<th>Submitted By</th>
 		<th>Submitted Date</th>
 		<th>Approved By</th>
@@ -54,16 +55,19 @@ function squadron_dues_info() {
 
 	$lead_qry = $wpdb->get_results( "SELECT * FROM wp_rg_lead WHERE form_id = 4 ORDER BY id" );
 	foreach( $lead_qry as $row ) {
+		unset( $fields );
 		$qry = $wpdb->get_results( sprintf( "SELECT * FROM wp_rg_lead_detail WHERE lead_id = %d", $row->id ) );
 		foreach( $qry as $subrow ) {
 			$fields[$subrow->field_number] = $subrow;
 		}
 		$unit = $row;
 		$unit->UnitName = $fields[1]->value;
-		$unit->Dues = $fields[2]->value;
+		$unit->SeniorDues = $fields[2]->value;
+		$unit->ApprovedDate = $fields[3]->value ? date( 'Y-m-d', strtotime( $fields[3]->value ) ) : NULL;
 		$unit->ApprovedBy = $fields[4]->value;
-		$unit->ApprovedDate = $fields[3]->value;
 		$unit->SubmittedBy = $fields[5]->value;
+		$unit->SubmittedDate = $row->date_created ? date( 'Y-m-d', strtotime( $row->date_created ) ) : NULL;
+		$unit->CadetDues = $fields[6]->value;
 		$units[$unit->UnitName] = $unit;
 	}
 
@@ -71,9 +75,10 @@ function squadron_dues_info() {
 		echo "<tr style='text-align: center;'>";
 		echo "<td>{$row->UnitName}</td>";
 		if ( $unitData = $units[$row->UnitName] ) {
-			echo "<td>{$unitData->Dues}</td>";
+			echo "<td>{$unitData->SeniorDues}</td>";
+			echo "<td>{$unitData->CadetDues}</td>";
 			echo "<td>{$unitData->SubmittedBy}</td>";
-			echo "<td>{$unitData->date_created}</td>";
+			echo "<td>{$unitData->SubmittedDate}</td>";
 			if ( !$unitData->ApprovedDate && in_array( $user->user_login, $approvers ) ) {
 				echo "	<td colspan='2'>
 							<input type='button' value='Approve' 
@@ -84,7 +89,7 @@ function squadron_dues_info() {
 				echo "<td>{$unitData->ApprovedDate}</td>";
 			}
 		} else {
-			echo "<td colspan='5'>No Data Submitted</td>";
+			echo "<td colspan='6'>No Data Submitted</td>";
 		}
 		echo "</tr>";
 	}
