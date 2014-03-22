@@ -701,6 +701,12 @@ function show_txwgcap_menu() {
 		echo '<div class="updated">Group map URL updated.</div>';
 	}
 
+	if ( $_POST['squadron_dues_approvers'] ) {
+		$data = $_POST['squadron_dues_approvers'];
+		update_option( 'txwgcap_squadron_dues_approvers', $data );
+		echo '<div class="updated">Squadron dues approvers list updated.</div>';
+	}
+
 	?>
 	<div id="wpbody">
 		<div id="wpbody-content">
@@ -728,6 +734,13 @@ function show_txwgcap_menu() {
 							<input type="submit" value="Update" />
 						</form>
 
+						<br />
+
+						<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
+							<label for="squadron_dues_approvers">CAPIDs of persons authorized to approve squadron dues (comma delimited)</label>
+							<input type="text" name="squadron_dues_approvers" id="squadron_dues_approvers" value="<?php echo get_option( 'txwgcap_squadron_dues_approvers' ); ?>" />
+							<input type="submit" value="Update" />
+						</form>
 					</div>
 
 				</div>
