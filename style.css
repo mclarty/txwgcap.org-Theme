@@ -3131,3 +3131,11 @@ li a[href$='https://plus.google.com/101965883926133529611'] {
 	background-color: inherit;
 	border-color: inherit;
 }
+
+.dues-list {
+	width: 100%;
+}
+
+.dues-list tr:nth-child(even) {
+	background-color: #eee;
+}
