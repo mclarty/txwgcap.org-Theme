@@ -6037,6 +6037,12 @@ li a[href$='http://www.facebook.com/pages/Texas-Wing-Civil-Air-Patrol/1910335176
 
 }
 
+li a[href$='https://plus.google.com/101965883926133529611'] {
+	display: inline-block;
+	padding-right: 20px;
+	line-height: 16px;
+	background: transparent url( 'images/gplus16x16.png' ) center right no-repeat;
+}
 
 #related_items {
 	width: 100%;
