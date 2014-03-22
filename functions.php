@@ -171,6 +171,8 @@ function txwg_add_gplus_content_widget() {
 }
 
 add_action( 'genesis_after_post_content', 'txwg_add_gplus_content_widget' );
+
+
 /** Texas Wing Widgets **/
 
 function add_read_private_cap_to_subscribers() {
@@ -189,7 +191,7 @@ function child_pages_shortcode( $atts = NULL ) {
 	   		'echo' => 0,
 	   		'depth' => 0,
 	   		'title_li' => NULL,
-	   		'child_of' => $post->ID
+	   		'child_of' => $post->ID,
 	   		), $atts
    		)
 	);
@@ -212,7 +214,7 @@ add_shortcode( 'children', 'child_pages_shortcode' );
 
 
 function show_pii_disclaimer() {
-	return '<h5 style="font-size: 11px; text-align: center;">Warning: The information you  are receiving is protected 
+	return '<h5 style="font-size: 11px; text-align: center;">Warning: The information you are receiving is protected 
 	from interception or disclosure.<br />
 	Any person who intentionally distributes, reproduces or discloses its contents is subject to the<br />
 	penalties set forth in 18 USC 2511 and/or related state and federal laws of the United States.</h5>';
@@ -294,16 +296,11 @@ add_shortcode( 'capwatch_lastupdated', 'capwatch_lastUpdated' );
 
 class UpdatesWidget extends WP_Widget {
 
-	
 	function UpdatesWidget() {
-			parent::__construct( 'updates_widget', 'Updates Widget' );
-	
-		}
-
-
+		parent::__construct( 'updates_widget', 'Updates Widget' );
+	}
 	
 	function widget( $args, $instance ) {
-	
 		$post_args['category'] = is_user_logged_in() ? 35 : 34;
 		$post_args['numberposts'] = 1;
 
@@ -315,24 +312,18 @@ class UpdatesWidget extends WP_Widget {
 				apply_filters( 'the_content', $post->post_content ) . '</div>';
 
 		endforeach;
-
 	}
 
 }
 
 
 class WingCCWidget extends WP_Widget {
-
 	
 	function WingCCWidget() {
-			parent::__construct( 'wing_cc_msg', 'Message from the Wing Commander' );
-	
-		}
-
-
+		parent::__construct( 'wing_cc_msg', 'Message from the Wing Commander' );
+	}
 	
 	function widget( $args, $instance ) {
-	
 		$post_args['category'] = is_user_logged_in() ? 27 : 3;
 		$post_args['numberposts'] = 1;
 
@@ -354,11 +345,9 @@ class WingCCWidget extends WP_Widget {
 				$content . '</div>';
 
 		endforeach;
-
 	}
 
 }
-
 
 class NTASWidget extends WP_Widget {
 
@@ -369,7 +358,7 @@ class NTASWidget extends WP_Widget {
 	function widget( $args, $instance ) {
 
 ?> 
-<div class="widget widget-wrap">
+<div class="widget widget-wrap" style="text-align: center;">
 	<h4>National Terrorism<br />Advisory System</h4>
 	<a href="http://www.dhs.gov/alerts">
 		<img src="http://www.dhs.gov/xlibrary/graphics/ntas/dhs-ntas-badge-small.jpg" alt="National Terrorism Advisory System (NTAS) check current status" />
@@ -440,6 +429,7 @@ function txwg_units_map() {
 	ob_end_clean();
 	return $output;
 }
+
 add_shortcode('unitsmap', 'txwg_units_map');
 
 function txwg_register_widgets() {
@@ -459,10 +449,9 @@ add_action( 'init', 'txwg_register_taxonomy_document_categories' );
 
 
 function txwg_register_taxonomy_document_categories() {
-
     
 	$labels = array( 
-	'name' => _x( 'Document Categories', 'document_categories' ),
+						'name' => _x( 'Document Categories', 'document_categories' ),
 						'singular_name' => _x( 'Document Category', 'document_categories' ),
 						'search_items' => _x( 'Search Document Categories', 'document_categories' ),
 						'popular_items' => _x( 'Popular Document Categories', 'document_categories' ),
@@ -477,8 +466,8 @@ function txwg_register_taxonomy_document_categories() {
 						'add_or_remove_items' => _x( 'Add or remove document categories', 'document_categories' ),
 						'choose_from_most_used' => _x( 'Choose from the most used document categories', 'document_categories' ),
 						'menu_name' => _x( 'Document Categories', 'document_categories' ),
-    
 					);
+
 	$args = array(		'labels' => $labels,
 						'public' => true,
 						'show_in_nav_menus' => true,
@@ -487,18 +476,16 @@ function txwg_register_taxonomy_document_categories() {
 						'hierarchical' => true,
 						'rewrite' => true,
 						'query_var' => true
-				
-    );
+					);
 
 	register_taxonomy( 'document_categories', array('document'), $args );
+
 }
 
 
 /** Document Custom Meta **/
 
 add_action( 'add_meta_boxes', 'txwg_add_document_data_metabox' );
-
-
 
 function txwg_add_document_data_metabox() {
 	add_meta_box(	'document_data_metabox',
@@ -553,6 +540,7 @@ function txwg_docs_list() {
 	global $args;
 	$docs_array = get_documents( $args );
 ?>
+
 <h2><?php the_title(); ?></h2>
 <table class="docs_table">
 	<tr>
@@ -578,8 +566,11 @@ function txwg_docs_list() {
 			<?php if ( !$args['doc_number'] ) { ?></a><?php } ?>
 		</td>
 	</tr>
+
 <?php endforeach; ?>
+
 </table>
+
 <?php
 }
 
@@ -863,6 +854,8 @@ function department_related_items() {
 	}
 
 }
+
+
 /** Gravity Forms Hacks **/
 
 add_filter( 'gform_pre_render_3', 'populate_wing_staff_report_date_dropdown' );
