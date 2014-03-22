@@ -28,7 +28,7 @@ add_theme_support( 'genesis-style-selector', array(
 	'education-green'	=> __( 'Green' , 'education' ), 
 	'education-purple'	=> __( 'Purple' , 'education' ), 
 	'education-red'		=> __( 'Red' , 'education' ), 
-	'education-teal'		=> __( 'Teal' , 'education' ) 
+	'education-teal'	=> __( 'Teal' , 'education' ) 
 ) );
 
 add_action( 'genesis_meta', 'education_add_viewport_meta_tag' );
@@ -869,7 +869,11 @@ function department_related_items() {
 }
 
 
-/** Gravity Forms Hacks **/
+/*************************
+ ** Gravity Forms Hacks **
+ *************************/
+
+/* Wing Staff Monthly Report */
 
 add_filter( 'gform_pre_render_3', 'populate_wing_staff_report_date_dropdown' );
 add_filter( 'gform_admin_pre_render_3', 'populate_wing_staff_report_date_dropdown' );
