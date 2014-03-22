@@ -162,6 +162,15 @@ function login_logout_menu_item( $items, $args ) {
 	return $items;
 }
 
+/** Add Google +1 Support **/
+
+function txwg_add_gplus_content_widget() {
+	if ( is_single() && get_post_type() == 'post' ) {
+		echo '<g:plusone></g:plusone>';
+	}
+}
+
+add_action( 'genesis_after_post_content', 'txwg_add_gplus_content_widget' );
 /** Texas Wing Widgets **/
 
 function add_read_private_cap_to_subscribers() {
