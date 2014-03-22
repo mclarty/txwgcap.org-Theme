@@ -34,7 +34,7 @@ function squadron_dues_info() {
 	}
 	?>
 
-<table width="100%">
+<table class="dues-list">
 	<tr>
 		<th>Unit Name</th>
 		<th>Dues Amount</th>
