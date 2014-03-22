@@ -6062,3 +6062,53 @@ li a[href$='https://plus.google.com/101965883926133529611'] {
 	width: 50%;
 	float: left;
 }
+
+.event_type_legend {
+	height: 25px;
+	line-height: 25px;
+}
+
+.event_type_legend span {
+	color: #fff;
+	padding: 0 5px;
+}
+
+.txwg_events {
+	background-color: #36c;
+	border-color: gray;
+}
+
+.txwg_ae_events {
+	background-color: #f83a22;
+	border-color: gray;
+}
+
+.txwg_cp_events {
+	background-color: #16a765;
+	border-color: gray;
+}
+
+.txwg_es_events {
+	background-color: #e87600;
+	border-color: gray;
+}
+
+.txwg_pd_events {
+	background-color: #4986e7;
+	border-color: gray;
+}
+
+.txwg_wing_events {
+	background-color: #9fc6e7;
+	border-color: gray;
+}
+
+.txwg_events div, 
+.txwg_ae_events div, 
+.txwg_cp_events div, 
+.txwg_es_events div, 
+.txwg_pd_events div,
+.txwg_wing_events div {
+	background-color: inherit;
+	border-color: inherit;
+}
