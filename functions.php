@@ -979,3 +979,70 @@ function populate_admin_wing_staff_report_functional_areas_dropdown( $form ) {
 
 	return $form;
 }
+
+
+/* Squadron Dues Info Form */
+
+add_filter( 'gform_pre_render_4', 'populate_sq_dues_info_form' );
+add_filter( 'gform_admin_pre_render_4', 'populate_sq_dues_info_form_admin' );
+
+function populate_sq_dues_info_form( $form ) {
+	global $wpdb;
+
+	$user = wp_get_current_user();
+
+	foreach( $form['fields'] as &$field ) {
+		if ( $field['inputName'] == 'Unit' ) {
+			$units[] = array( 'text' => '-- Select One --', 'value' => NULL );
+
+			$qry_string = sprintf(	"SELECT CONCAT( Region, '-', Wing, '-', Unit, ' ', Name ) AS UnitName 
+									 FROM wp_capwatch_org
+									 WHERE ORGID IN (
+									 	SELECT DISTINCT ORGID 
+									 	FROM wp_capwatch_duty_position 
+									 	WHERE CAPID = %s 
+									 	AND Duty LIKE '%s' ) ",
+							mysql_real_escape_string( $user->user_login ),
+							'%Commander%'
+			);
+
+			$qry = $wpdb->get_results( $qry_string );
+
+			foreach( $qry as $row ) {
+				$display = $row->UnitName;
+				$units[] = array( 'text' => $display, 'value' => $display );
+			}
+
+			$field['choices'] = $units;
+		}
+
+		if ( $field['inputName'] == 'Submitted By' ) {
+			$field['defaultValue'] = mysql_real_escape_string( $user->display_name );
+		}
+	}
+
+	return $form;
+}
+
+function populate_sq_dues_info_form_admin( $form ) {
+	global $wpdb;
+
+	foreach( $form['fields'] as &$field ) {
+		if ( $field['inputName'] == 'Unit' ) {
+			$units[] = array( 'text' => '-- Select One --', 'value' => NULL );
+
+			$qry_string = "SELECT CONCAT( Region, '-', Wing, '-', Unit, ' ', Name ) AS UnitName FROM wp_capwatch_org";
+
+			$qry = $wpdb->get_results( $qry_string );
+
+			foreach( $qry as $row ) {
+				$display = $row->UnitName;
+				$units[] = array( 'text' => $display, 'value' => $display );
+			}
+
+			$field['choices'] = $units;
+		}
+	}
+
+	return $form;
+}
