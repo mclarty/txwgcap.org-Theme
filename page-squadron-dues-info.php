@@ -37,12 +37,12 @@ function squadron_dues_info() {
 <table class="dues-list">
 	<tr>
 		<th>Unit Name</th>
-		<th>Senior Dues</th>
-		<th>Cadet Dues</th>
-		<th>Submitted By</th>
-		<th>Submitted Date</th>
-		<th>Approved By</th>
-		<th>Approved Date</th>
+		<th>New Seniors</th>
+		<th>Renewal Seniors</th>
+		<th>New Cadets</th>
+		<th>Renewal Cadets</th>
+		<th>Submitted</th>
+		<th>Approved</th>
 	</tr>
 	<?php
 
@@ -62,12 +62,14 @@ function squadron_dues_info() {
 		}
 		$unit = $row;
 		$unit->UnitName = $fields[1]->value;
-		$unit->SeniorDues = $fields[2]->value;
+		$unit->RenewalSeniorDues = $fields[2]->value;
 		$unit->ApprovedDate = $fields[3]->value ? date( 'Y-m-d', strtotime( $fields[3]->value ) ) : NULL;
 		$unit->ApprovedBy = $fields[4]->value;
 		$unit->SubmittedBy = $fields[5]->value;
 		$unit->SubmittedDate = $row->date_created ? date( 'Y-m-d', strtotime( $row->date_created ) ) : NULL;
-		$unit->CadetDues = $fields[6]->value;
+		$unit->RenewalCadetDues = $fields[6]->value;
+		$unit->NewSeniorDues = $fields[7]->value;
+		$unit->NewCadetDues = $fields[8]->value;
 		$units[$unit->UnitName] = $unit;
 	}
 
@@ -75,18 +77,18 @@ function squadron_dues_info() {
 		echo "<tr style='text-align: center;'>";
 		echo "<td>{$row->UnitName}</td>";
 		if ( $unitData = $units[$row->UnitName] ) {
-			echo "<td>{$unitData->SeniorDues}</td>";
-			echo "<td>{$unitData->CadetDues}</td>";
-			echo "<td>{$unitData->SubmittedBy}</td>";
-			echo "<td>{$unitData->SubmittedDate}</td>";
+			echo "<td>{$unitData->NewSeniorDues}</td>";
+			echo "<td>{$unitData->RenewalSeniorDues}</td>";
+			echo "<td>{$unitData->NewCadetDues}</td>";
+			echo "<td>{$unitData->RenewalCadetDues}</td>";
+			echo "<td><a title='{$unitData->SubmittedBy}'>{$unitData->SubmittedDate}</a></td>";
 			if ( !$unitData->ApprovedDate && in_array( $user->user_login, $approvers ) ) {
 				echo "	<td colspan='2'>
 							<input type='button' value='Approve' 
 							onclick=\"window.location.href='" . $_SERVER['REQUEST_URI'] . "?approve={$unitData->id}'\" />
 						</td>";
 			} else {
-				echo "<td>{$unitData->ApprovedBy}</td>";
-				echo "<td>{$unitData->ApprovedDate}</td>";
+				echo "<td><a title='{$unitData->ApprovedBy}'>{$unitData->ApprovedDate}</a></td>";
 			}
 		} else {
 			echo "<td colspan='6'>No Data Submitted</td>";
