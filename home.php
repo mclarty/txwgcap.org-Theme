@@ -115,9 +115,10 @@ function txwgcap_genesis_do_loop() {
 		while ( have_posts() ) : the_post();
 
 			echo '<div class="post type-post status-publish format-standard entry homepage">';
-			echo get_the_post_thumbnail( NULL, NULL, array( 'class' => 'alignleft' ) );
+			echo get_the_post_thumbnail( NULL, 'thumbnail', array( 'class' => 'alignleft' ) );
 			echo '<h2><a href="' . get_permalink() . '">' . get_the_title() . '</a></h2>';
 			echo '<p>' . get_the_excerpt() . '</p>';
+			echo '<div style="clear: both;"></div>';
 			echo '</div>';
 
 		endwhile;
