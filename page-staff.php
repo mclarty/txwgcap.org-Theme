@@ -46,9 +46,9 @@ function staff_listing() {
 		$qry  = "SELECT wp_officers.*, 
 				(SELECT Rank FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Rank, 
 				(SELECT CONCAT(NameFirst, ' ', NameLast) FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Name, 
-				(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'CELL PHONE' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID) AS CellPhone, 
-				(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'HOME PHONE' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID) AS HomePhone, 
-				(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID) AS Email 
+				(SELECT DISTINCT Contact FROM wp_capwatch_member_contact WHERE Type = 'CELL PHONE' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID LIMIT 1) AS CellPhone, 
+				(SELECT DISTINCT Contact FROM wp_capwatch_member_contact WHERE Type = 'HOME PHONE' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID LIMIT 1) AS HomePhone, 
+				(SELECT DISTINCT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND DoNotContact = 'False' AND CAPID = wp_officers.positionCAPID LIMIT 1) AS Email 
 				FROM wp_officers WHERE positionType = {$function->positionTypeID} ";
 		if ( !is_user_logged_in() ) {
 			$qry .= "AND positionPublic = 1 ";

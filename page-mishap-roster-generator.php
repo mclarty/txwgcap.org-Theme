@@ -21,9 +21,6 @@ if ( $_POST['action'] == 'query_people' ) {
 }
 
 if ( $_POST['action'] == 'Generate Roster PDF' ) {
-	header( 'Content-Type: application/vnd.adobe.xfdf' );
-	header( 'Content-Disposition: attachment; filename="Mishap_Roster_' . time() . '.xfdf' );
-
 	foreach( array( 'Unit_CC', 'Unit_CD', 'Unit_SE', 'Group_CC', 'Group_CD', 'Group_SE' ) as $k ) {
 		$l = strtolower( $k );
 		if ( $_POST[$l] ) {
@@ -34,12 +31,12 @@ if ( $_POST['action'] == 'Generate Roster PDF' ) {
 
 	$id_string = implode( ',', $id_array );
 
-	$org = $wpdb->get_results( sprintf( "SELECT Unit, Name FROM wp_capwatch_org WHERE ORGID = %d", $_POST['orgID'] ) );
+	$org = $wpdb->get_results( sprintf( "SELECT Region, Wing, Unit, Name FROM wp_capwatch_org WHERE ORGID = %d", $_POST['orgID'] ) );
 
 	$people = $wpdb->get_results( sprintf( "SELECT CAPID, Rank, NameLast, NameFirst FROM wp_capwatch_member WHERE CAPID IN (%s)", $id_string ) );
 
 	$contacts = $wpdb->get_results( sprintf( "SELECT CAPID, Type, Priority, Contact FROM wp_capwatch_member_contact WHERE Type IN 
-		('HOME PHONE', 'HOME FAX', 'CELL PHONE') AND CAPID IN (%s)", $id_string ) );
+		('HOME PHONE', 'CELL PHONE', 'EMAIL') AND CAPID IN (%s)", $id_string ) );
 
 	foreach( $people as $person ) {
 		$capid = $person->CAPID;
@@ -60,32 +57,36 @@ if ( $_POST['action'] == 'Generate Roster PDF' ) {
 		}
 	}
 
-	$xml = new SimpleXMLElement( '<xfdf xml:space="preserve" xmlns="http://ns.adobe.com/xfdf/"></xfdf>' );
-	$f = $xml->addChild( 'f' );
-	$f->addAttribute( 'href', 'http://www.txwgcap.org/wp-content/uploads/2013/10/TXWGF62-2-1_6Oct13_Fillable.pdf');
-	$fields = $xml->addChild( 'fields' );
+	require('/var/www/www.txwgcap.org/wp-content/themes/txwgcap/fpdm/fpdm.php');
 
-	foreach( array( 'Unit_Name' => $org[0]->Name, 'Unit_Charter' => $org[0]->Unit, 'Date' => date( 'd M Y' ) ) as $key => $val ) {
-		$field = $fields->addChild( 'field' );
-		$field->addAttribute( 'name', $key );
-		$field->addChild( 'value', $val );
-	}
+	$fields['Unit_Name'] = $org[0]->Name;
+	$fields['Unit_Charter'] = $org[0]->Region . '-' . $org[0]->Wing . '-' . $org[0]->Unit;
+	$fields['Date_of_Publication'] = date( 'd M Y' );
+
+	$file = file_get_contents( 'http://www.txwgcap.org/documents/2014/03/texas-wing-mishap-reporting-roster.pdf' );
+	$rando = sha1( microtime() );
+
+	file_put_contents( "/tmp/{$rando}.pdf", $file );
+
+	exec( "pdftk /tmp/{$rando}.pdf output /tmp/{$rando}_template.pdf" );
 
 	foreach( $roster as $key => $val ) {
-		foreach( array( 'Name' => 'Name', 'Phone' => 'HOME PHONE', 'Mobile' => 'CELL PHONE', 'Fax' => 'HOME FAX' ) as $item => $attr ) {
-			$field = $fields->addChild( 'field' );
-			$field->addAttribute( 'name', "{$key}_{$item}" );
+		foreach( array( 'Name' => 'Name', 'Phone' => 'HOME PHONE', 'Mobile' => 'CELL PHONE', 'Email' => 'EMAIL' ) as $item => $attr ) {
+			$field = "{$key}_{$item}";
 			if ( $item == 'Name' ) {
-				$field->addChild( 'value', $val[$attr] );
-			} else {
-				$field->addChild( 'value', mishapRosterFormatPhoneNumber( $val[$attr] ) );
+				$fields[$field] = $val[$attr];
+			} elseif ( $item == 'Email' && $key == 'Unit_CC' ) {
+				$fields[$field] = $val[$attr];
+			} elseif ( $item != 'Email' ) {
+				$fields[$field] = mishapRosterFormatPhoneNumber( $val[$attr] );
 			}
 		}
 	}
 
-	echo $xml->asXML();
-
-	die();
+	$pdf = new FPDM("/tmp/{$rando}_template.pdf");
+	$pdf->Load( $fields, false );
+	$pdf->Merge();
+	$pdf->Output();
 }
 
 function unitsList( $qry ) {
@@ -129,7 +130,7 @@ function constructDropdown( $label, $field, $var ) {
 
 function mishapRosterFormatPhoneNumber( $val ) {
 	if ( strlen( $val ) == 10 ) {
-		return substr( $val, 0, 3 ) . '.' . substr( $val, 3, 3 ) . '.' . substr( $val, 6, 4 );
+		return substr( $val, 0, 3 ) . '-' . substr( $val, 3, 3 ) . '-' . substr( $val, 6, 4 );
 	} else {
 		return $val;
 	}

@@ -1,5 +1,13 @@
 <?php
 
+if ( $_GET['query'] ) {
+	$result = $wpdb->get_results( sprintf( "SELECT * FROM wp_capwatch_org_contact WHERE ORGID = %d", mysql_real_escape_string( $_GET['query'] ) ) );
+
+	echo print_r( $result, TRUE );
+
+	die();
+}
+
 function txwgcap_get_unit_data( $query ) {
 	global $wpdb;
 
@@ -8,18 +16,34 @@ function txwgcap_get_unit_data( $query ) {
 							wp_capwatch_org.Unit, 
 							wp_capwatch_org.NextLevel, 
 							wp_capwatch_org.Name, 
-							(SELECT Addr1 
+							(SELECT DISTINCT Addr1 
 								FROM wp_capwatch_org_address 
 								WHERE wp_capwatch_org.ORGID = wp_capwatch_org_address.ORGID 
 									AND wp_capwatch_org_address.Type = 'MAIL' 
-									AND wp_capwatch_org_address.Priority = 'PRIMARY') 
-								AS Address1, 
-							(SELECT CONCAT(City, ', ', State, ' ', LEFT(Zip, 5)) 
+									AND wp_capwatch_org_address.Priority = 'PRIMARY' 
+									LIMIT 1) 
+								AS MailingAddress1, 
+							(SELECT DISTINCT CONCAT(City, ', ', State, ' ', LEFT(Zip, 5)) 
 								FROM wp_capwatch_org_address 
 								WHERE wp_capwatch_org.ORGID = wp_capwatch_org_address.ORGID 
 									AND wp_capwatch_org_address.Type = 'MAIL' 
-									AND wp_capwatch_org_address.Priority = 'PRIMARY') 
-								AS Address2, 
+									AND wp_capwatch_org_address.Priority = 'PRIMARY' 
+									LIMIT 1) 
+								AS MailingAddress2, 
+							(SELECT DISTINCT Addr1 
+								FROM wp_capwatch_org_address 
+								WHERE wp_capwatch_org.ORGID = wp_capwatch_org_address.ORGID 
+									AND wp_capwatch_org_address.Type = 'MEETING' 
+									AND wp_capwatch_org_address.Priority = 'PRIMARY' 
+									LIMIT 1) 
+								AS MeetingAddress1, 
+							(SELECT DISTINCT CONCAT(City, ', ', State, ' ', LEFT(Zip, 5)) 
+								FROM wp_capwatch_org_address 
+								WHERE wp_capwatch_org.ORGID = wp_capwatch_org_address.ORGID 
+									AND wp_capwatch_org_address.Type = 'MEETING' 
+									AND wp_capwatch_org_address.Priority = 'PRIMARY' 
+									LIMIT 1) 
+								AS MeetingAddress2, 
 							(SELECT CAPID 
 								FROM wp_capwatch_commanders 
 								WHERE wp_capwatch_org.ORGID = wp_capwatch_commanders.ORGID) 
@@ -28,23 +52,26 @@ function txwgcap_get_unit_data( $query ) {
 								FROM wp_capwatch_commanders 
 								WHERE wp_capwatch_org.ORGID = wp_capwatch_commanders.ORGID) 
 								AS CommanderName, 
-							(SELECT Contact 
+							(SELECT DISTINCT Contact 
 								FROM wp_capwatch_member_contact 
 								WHERE wp_capwatch_member_contact.CAPID = CommanderCAPID 
 									AND wp_capwatch_member_contact.Type = 'EMAIL' 
-									AND wp_capwatch_member_contact.Priority = 'PRIMARY') 
+									AND wp_capwatch_member_contact.Priority = 'PRIMARY' 
+									LIMIT 1) 
 								AS CommanderEmail, 
-							(SELECT Contact 
+							(SELECT DISTINCT Contact 
 								FROM wp_capwatch_org_contact 
 								WHERE wp_capwatch_org.ORGID = wp_capwatch_org_contact.ORGID 
 									AND wp_capwatch_org_contact.Type = 'EMAIL' 
-									AND wp_capwatch_org_contact.Priority = 'PRIMARY') 
+									AND wp_capwatch_org_contact.Priority = 'PRIMARY' 
+									LIMIT 1) 
 								AS UnitEmail,
-							(SELECT Contact 
+							(SELECT DISTINCT Contact 
 								FROM wp_capwatch_org_contact 
 								WHERE wp_capwatch_org.ORGID = wp_capwatch_org_contact.ORGID 
 									AND wp_capwatch_org_contact.Type = 'URL' 
-									AND wp_capwatch_org_contact.Priority = 'PRIMARY') 
+									AND wp_capwatch_org_contact.Priority = 'PRIMARY' 
+									LIMIT 1) 
 								AS URL 
 							FROM wp_capwatch_org 
 							WHERE " . $query );
@@ -55,8 +82,8 @@ function txwgcap_get_unit_data( $query ) {
 function txwgcap_make_unit_row( $unit, $header = NULL ) {
 	$table_args = array( 	'Charter' => '5%',
 					'Unit Name' => '20%',
-					'Address' => '18%',
-					'City/State/Zip' => '18%',
+					'Mailing Address' => '18%',
+					'Meeting Address' => '18%',
 					'Commander' => '17%',
 					'Unit Email' => '18%'
 				);
@@ -66,7 +93,7 @@ function txwgcap_make_unit_row( $unit, $header = NULL ) {
 	if ( $header ) {
 		echo '<tr>';
 		foreach ( $table_args as $key => $val ) {
-			if ( !in_array( $key, array( 'Address', 'City/State/Zip' ) ) || is_user_logged_in() ) {
+			if ( !in_array( $key, array( 'Mailing Address' ) ) || is_user_logged_in() ) {
 				echo '<th style="width: ' . $val . ';">' . $key . '</th>';
 			}
 		}
@@ -80,9 +107,9 @@ function txwgcap_make_unit_row( $unit, $header = NULL ) {
 		if ( $unit->URL ) echo '</a>';
 		echo '</td>';
 		if ( is_user_logged_in() ) {
-			echo '<td style="width: ' . $table_args['Address'] . ';">' . strtoupper( $unit->Address1 ) . '</td>';
-			echo '<td style="width: ' . $table_args['City/State/Zip'] . ';">' . strtoupper( $unit->Address2 ) . '</td>';
+			echo '<td style="width: ' . $table_args['Mailing Address'] . ';">' . strtoupper( $unit->MailingAddress1 ) . '<br />' . strtoupper( $unit->MailingAddress2 ) . '</td>';
 		}
+		echo '<td style="width: ' . $table_args['Meeting Address'] . ';">' . strtoupper( $unit->MeetingAddress1 ) . '<br />' . strtoupper( $unit->MeetingAddress2 ) . '</td>';
 		if ( is_user_logged_in() && $unit->CommanderEmail ) {
 			echo '<td style="width: ' . $table_args['Commander'] . ';"><a href="mailto:' . $unit->CommanderEmail . '">' . $unit->CommanderName . '</a></td>';
 		} else {

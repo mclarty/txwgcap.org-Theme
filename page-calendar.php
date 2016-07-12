@@ -1,9 +1,10 @@
 <?php
 
 wp_enqueue_script( 'jquery' );
-wp_enqueue_script( 'fullcalendar', get_stylesheet_directory_uri() . '/fullcalendar/fullcalendar.js' );
-wp_enqueue_script( 'gcal', get_stylesheet_directory_uri() . '/fullcalendar/gcal.js' );
-wp_enqueue_style( 'fullcalendar', get_stylesheet_directory_uri() . '/fullcalendar/fullcalendar.css' );
+wp_enqueue_script( 'moment', get_stylesheet_directory_uri() . '/moment.min.js', array( 'jquery' ), '2.8.4' );
+wp_enqueue_script( 'fullcalendar', get_stylesheet_directory_uri() . '/fullcalendar/fullcalendar.min.js', array( 'moment', 'jquery' ), '2.2.2' );
+wp_enqueue_script( 'gcal', get_stylesheet_directory_uri() . '/fullcalendar/gcal.js', array( 'fullcalendar', 'moment', 'jquery' ), '2.2.2' );
+wp_enqueue_style( 'fullcalendar', get_stylesheet_directory_uri() . '/fullcalendar/fullcalendar.min.css', false, '2.2.2' );
 
 function txwg_render_calendar() {
 	$txwg_cal = json_decode( file_get_contents( get_stylesheet_directory_uri() . '/calendars.json' ), TRUE );
@@ -12,14 +13,15 @@ function txwg_render_calendar() {
 
 jQuery(document).ready(function($) {
     $('#calendar').fullCalendar({
+    	googleCalendarApiKey: 'AIzaSyA7MUaSefXqgczAuD3ANa0RMGipr4fZPPY',
         eventSources: [
 <?php foreach( $txwg_cal as $key => $val ) { ?>
 			{
-				url: '<?php echo $val['xml_url']; ?>',
+				googleCalendarId: '<?php echo $val['CalendarID']; ?>',
 				className: '<?php echo $key; ?>'
 			},
 <?php } ?>
-        ]
+        ],
     });
 });
 

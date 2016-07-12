@@ -53,42 +53,42 @@ function squadron_dues_info() {
 											AND Scope = 'UNIT' 
 											ORDER BY UnitName" );
 
-	$lead_qry = $wpdb->get_results( "SELECT * FROM wp_rg_lead WHERE form_id = 4 ORDER BY id" );
-	foreach( $lead_qry as $row ) {
-		unset( $fields );
-		$qry = $wpdb->get_results( sprintf( "SELECT * FROM wp_rg_lead_detail WHERE lead_id = %d", $row->id ) );
-		foreach( $qry as $subrow ) {
-			$fields[$subrow->field_number] = $subrow;
-		}
-		$unit = $row;
-		$unit->UnitName = $fields[1]->value;
-		$unit->RenewalSeniorDues = $fields[2]->value;
-		$unit->ApprovedDate = $fields[3]->value ? date( 'Y-m-d', strtotime( $fields[3]->value ) ) : NULL;
-		$unit->ApprovedBy = $fields[4]->value;
-		$unit->SubmittedBy = $fields[5]->value;
-		$unit->SubmittedDate = $row->date_created ? date( 'Y-m-d', strtotime( $row->date_created ) ) : NULL;
-		$unit->RenewalCadetDues = $fields[6]->value;
-		$unit->NewSeniorDues = $fields[7]->value;
-		$unit->NewCadetDues = $fields[8]->value;
-		$units[$unit->UnitName] = $unit;
+	$form_id = 4;
+	$lead_table_name = GFFormsModel::get_lead_table_name();
+	$qry = "SELECT COUNT(id) AS count FROM $lead_table_name WHERE form_id = $form_id";
+	$leads_count = $wpdb->get_results( $qry );
+	$leads = GFFormsModel::get_leads( $form_id, NULL, NULL, NULL, 0, $leads_count[0]->count );
+	foreach( $leads as $row ) {
+		$unit = NULL;
+		$unit['id'] = $row['id'];
+		$unit['UnitName'] = $row[1];
+		$unit['RenewalSeniorDues'] = $row[2];
+		$unit['ApprovedDate'] = $row[3] ? date( 'Y-m-d', strtotime( $row[3] ) ) : NULL;
+		$unit['ApprovedBy'] = $row[4];
+		$unit['SubmittedBy'] = $row[5];
+		$unit['SubmittedDate'] = $row['date_created'] ? date( 'Y-m-d', strtotime( $row['date_created'] ) ) : NULL;
+		$unit['RenewalCadetDues'] = $row[6];
+		$unit['NewSeniorDues'] = $row[7];
+		$unit['NewCadetDues'] = $row[8];
+		$units[$unit['UnitName']] = $unit;
 	}
 
 	foreach( $unitListing as $row ) {
 		echo "<tr style='text-align: center;'>";
 		echo "<td>{$row->UnitName}</td>";
 		if ( $unitData = $units[$row->UnitName] ) {
-			echo "<td>{$unitData->NewSeniorDues}</td>";
-			echo "<td>{$unitData->RenewalSeniorDues}</td>";
-			echo "<td>{$unitData->NewCadetDues}</td>";
-			echo "<td>{$unitData->RenewalCadetDues}</td>";
-			echo "<td><a title='{$unitData->SubmittedBy}'>{$unitData->SubmittedDate}</a></td>";
+			echo "<td>{$unitData['NewSeniorDues']}</td>";
+			echo "<td>{$unitData['RenewalSeniorDues']}</td>";
+			echo "<td>{$unitData['NewCadetDues']}</td>";
+			echo "<td>{$unitData['RenewalCadetDues']}</td>";
+			echo "<td><a title='{$unitData['SubmittedBy']}'>{$unitData['SubmittedDate']}</a></td>";
 			if ( !$unitData->ApprovedDate && in_array( $user->user_login, $approvers ) ) {
 				echo "	<td colspan='2'>
 							<input type='button' value='Approve' 
-							onclick=\"window.location.href='" . $_SERVER['REQUEST_URI'] . "?approve={$unitData->id}'\" />
+							onclick=\"window.location.href='" . $_SERVER['REQUEST_URI'] . "?approve={$unitData['id']}'\" />
 						</td>";
 			} else {
-				echo "<td><a title='{$unitData->ApprovedBy}'>{$unitData->ApprovedDate}</a></td>";
+				echo "<td><a title='{$unitData['ApprovedBy']}'>{$unitData['ApprovedDate']}</a></td>";
 			}
 		} else {
 			echo "<td colspan='6'>No Data Submitted</td>";
