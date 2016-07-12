@@ -1062,25 +1062,12 @@ add_filter( 'gform_admin_pre_render_5', 'populate_vehicle_monthly_usage_report' 
 function populate_vehicle_monthly_usage_report( $form ) {
 	global $wpdb;
 
-	$excluded_vehicles = array( '42000', '42101', '42103', '42110', '42117', '42119', '42120', '42130', '42132', '42137', '42298', '42501',
-					'42502', '42503', '42504', '42505', '42506', '42507', '42508', '42509', '42510', '42511', '42990', '42991' );
+	$excluded_vehicles = array( '42000', '42101', '42103', '42117', '42119', '42130', '42137', '42298', '42501', '42502', 
+								'42503', '42504', '42505', '42506', '42507', '42508', '42509', '42510', '42511', '42990', '42991' );
 
-								
-								
 	foreach( $form['fields'] as &$field ) {
 		if ( $field['inputName'] == 'ReportMonth' ) {
 			$months[] = array( 'text' => '-- Select One --', 'value' => NULL );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-13 months' ) ), 'value' => date( 'F Y', strtotime( '-13 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-12 months' ) ), 'value' => date( 'F Y', strtotime( '-12 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-11 months' ) ), 'value' => date( 'F Y', strtotime( '-11 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-10 months' ) ), 'value' => date( 'F Y', strtotime( '-10 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-9 months' ) ), 'value' => date( 'F Y', strtotime( '-9 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-8 months' ) ), 'value' => date( 'F Y', strtotime( '-8 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-7 months' ) ), 'value' => date( 'F Y', strtotime( '-7 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-6 months' ) ), 'value' => date( 'F Y', strtotime( '-6 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-5 months' ) ), 'value' => date( 'F Y', strtotime( '-5 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-4 months' ) ), 'value' => date( 'F Y', strtotime( '-4 months' ) ) );
-			$months[] = array( 'text' => date( 'F Y', strtotime( '-3 months' ) ), 'value' => date( 'F Y', strtotime( '-3 months' ) ) );
 			$months[] = array( 'text' => date( 'F Y', strtotime( '-2 months' ) ), 'value' => date( 'F Y', strtotime( '-2 months' ) ) );
 			$months[] = array( 'text' => date( 'F Y', strtotime( '-1 month' ) ), 'value' => date( 'F Y', strtotime( '-1 month' ) ) );
 			// $months[] = array( 'text' => date( 'F Y' ), 'value' => date( 'F Y' ) );
