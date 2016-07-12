@@ -1,26 +1,31 @@
 {
 	"txwg_ae_events": {
 		"name": "Aerospace Education Events",
-		"xml_url": "http://www.google.com/calendar/feeds/al5roupnqoa36605629na7o3gk%40group.calendar.google.com/public/basic",
-		"ical_url": "http://www.google.com/calendar/ical/al5roupnqoa36605629na7o3gk%40group.calendar.google.com/public/basic.ics"
+		"CalendarID": "al5roupnqoa36605629na7o3gk@group.calendar.google.com",
+		"xml_url": "https://www.google.com/calendar/feeds/al5roupnqoa36605629na7o3gk%40group.calendar.google.com/public/basic",
+		"ical_url": "https://www.google.com/calendar/ical/al5roupnqoa36605629na7o3gk%40group.calendar.google.com/public/basic.ics"
 	},
 	"txwg_cp_events": {
 		"name": "Cadet Programs Events",
-		"xml_url": "http://www.google.com/calendar/feeds/e3evc1h1uj54j7if8895cgj3i4%40group.calendar.google.com/public/basic",
-		"ical_url": "http://www.google.com/calendar/ical/e3evc1h1uj54j7if8895cgj3i4%40group.calendar.google.com/public/basic.ics"
+		"CalendarID": "e3evc1h1uj54j7if8895cgj3i4@group.calendar.google.com",
+		"xml_url": "https://www.google.com/calendar/feeds/e3evc1h1uj54j7if8895cgj3i4%40group.calendar.google.com/public/basic",
+		"ical_url": "https://www.google.com/calendar/ical/e3evc1h1uj54j7if8895cgj3i4%40group.calendar.google.com/public/basic.ics"
 	},
 	"txwg_es_events": {
 		"name": "Emergency Services Events",
-		"xml_url": "http://www.google.com/calendar/feeds/si78ir4uvqn5dim8peo8nluuqk%40group.calendar.google.com/public/basic",
-		"ical_url": "http://www.google.com/calendar/ical/si78ir4uvqn5dim8peo8nluuqk%40group.calendar.google.com/public/basic.ics"
+		"CalendarID": "si78ir4uvqn5dim8peo8nluuqk@group.calendar.google.com",
+		"xml_url": "https://www.google.com/calendar/feeds/si78ir4uvqn5dim8peo8nluuqk%40group.calendar.google.com/public/basic",
+		"ical_url": "https://www.google.com/calendar/ical/si78ir4uvqn5dim8peo8nluuqk%40group.calendar.google.com/public/basic.ics"
 	},
 	"txwg_pd_events": {
 		"name": "Professional Development Events",
-		"xml_url": "http://www.google.com/calendar/feeds/cg9lff52s88ae04cmem9i974gg%40group.calendar.google.com/public/basic",
-		"ical_url": "http://www.google.com/calendar/ical/cg9lff52s88ae04cmem9i974gg%40group.calendar.google.com/public/basic.ics"
+		"CalendarID": "cg9lff52s88ae04cmem9i974gg@group.calendar.google.com",
+		"xml_url": "https://www.google.com/calendar/feeds/cg9lff52s88ae04cmem9i974gg%40group.calendar.google.com/public/basic",
+		"ical_url": "https://www.google.com/calendar/ical/cg9lff52s88ae04cmem9i974gg%40group.calendar.google.com/public/basic.ics"
 	},
 	"txwg_wing_events": {
 		"name": "Wing Staff Events",
+		"CalendarID": "v31ea7a7t79jp6h36qk1li1610@group.calendar.google.com",
 		"xml_url": "https://www.google.com/calendar/feeds/v31ea7a7t79jp6h36qk1li1610%40group.calendar.google.com/public/basic",
 		"ical_url": "https://www.google.com/calendar/ical/v31ea7a7t79jp6h36qk1li1610%40group.calendar.google.com/public/basic.ics"
 	}
