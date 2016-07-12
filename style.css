@@ -57,7 +57,7 @@
 /* Import Fonts
 ------------------------------------------------------------ */
 
-@import url(http://fonts.googleapis.com/css?family=Vollkorn:400italic,400);
+@import url(https://fonts.googleapis.com/css?family=Vollkorn:400italic,400);
 
 /* Defaults
 ------------------------------------------------------------ */
@@ -3141,5 +3141,33 @@ li a[href$='https://plus.google.com/101965883926133529611'] {
 }
 
 .dues-list tr:nth-child(odd) {
+	background-color: #eee;
+}
+
+.wing-report-schedule tbody {
+	margin-bottom: 24px;
+}
+
+.wing-report-schedule tbody tr:nth-child(even) {
+	background-color: #ddd;
+}
+
+.wing-report-schedule tbody tr:nth-child(odd) {
+	background-color: #eee;
+}
+
+.mailing-lists table {
+	width: 100%;
+}
+
+.mailing-lists tbody td {
+	padding: 5px;
+}
+
+.mailing-lists tbody tr:nth-child(even) {
+	background-color: #ddd;
+}
+
+.mailing-lists tbody tr:nth-child(odd) {
 	background-color: #eee;
 }
