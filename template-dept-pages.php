@@ -35,9 +35,9 @@ function department_body( $post ) {
 function department_sidebar() {
 	global $post, $wpdb;
 	
-	$qry = "SELECT wp_officers.*, (SELECT Rank FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Rank, ";
-	$qry.= "(SELECT CONCAT(NameFirst, ' ', NameLast) FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID) AS Name, ";
-	$qry.= "(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND CAPID = wp_officers.positionCAPID) AS Email ";
+	$qry = "SELECT wp_officers.*, (SELECT Rank FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID LIMIT 1) AS Rank, ";
+	$qry.= "(SELECT CONCAT(NameFirst, ' ', NameLast) FROM wp_capwatch_member WHERE CAPID = wp_officers.positionCAPID LIMIT 1) AS Name, ";
+	$qry.= "(SELECT Contact FROM wp_capwatch_member_contact WHERE Type = 'EMAIL' AND Priority = 'PRIMARY' AND CAPID = wp_officers.positionCAPID LIMIT 1) AS Email ";
 	$qry.= "FROM wp_officers WHERE positionShortname = '{$post->post_name}'";
 
 	$officersSelection = $wpdb->get_results( $qry );
